@@ -1,32 +1,39 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import ORJSONResponse
 
+from app.application.controllers import (
+    CreateUserController,
+    ListUserController,
+    UpdateUserController,
+    DeleteUserController,
+)
+
 users_router = APIRouter()
 
 
 @users_router.post("/user")
-def create_user(
+async def create_user(
     request: Request,
 ) -> ORJSONResponse:
-    return ORJSONResponse(dict())
+    return await CreateUserController(request=request).call()
 
 
 @users_router.get("/user")
-def list_users(
+async def list_users(
     request: Request,
 ) -> ORJSONResponse:
-    return ORJSONResponse(dict())
+    return await ListUserController(request=request).call()
 
 
 @users_router.put("/user")
-def update_user(
+async def update_user(
     request: Request,
 ) -> ORJSONResponse:
-    return ORJSONResponse(dict())
+    return await UpdateUserController(request=request).call()
 
 
 @users_router.delete("/user")
-def delete_user(
+async def delete_user(
     request: Request,
 ) -> ORJSONResponse:
-    return ORJSONResponse(dict())
+    return await DeleteUserController(request=request).call()
