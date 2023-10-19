@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import ORJSONResponse
 
-from app.application.controllers import (
+from app.application.controllers.users import (
     CreateUserController,
     ListUserController,
     UpdateUserController,

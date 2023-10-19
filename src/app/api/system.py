@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import ORJSONResponse
 
-from app.application.controllers.system.healthcheck import HealthcheckController
+from app.application.controllers.system import HealthcheckController
 
 system_router = APIRouter()
 

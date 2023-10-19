@@ -1,5 +1,6 @@
-from app.application import BaseController
 from fastapi import Request
+
+from app.application.controllers import BaseController
 
 
 class HealthcheckController(BaseController):

@@ -1,5 +1,8 @@
-from app.application import BaseController
 from fastapi import Request
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.application.controllers import BaseController
+from app.application.models import User
 
 
 class DeleteUserController(BaseController):
@@ -7,4 +10,6 @@ class DeleteUserController(BaseController):
         super(DeleteUserController, self).__init__(request=request)
 
     async def _call(self):
-        return dict()
+        async with self.session() as session:
+            session: AsyncSession
+            session.update
