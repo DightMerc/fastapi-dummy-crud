@@ -12,4 +12,4 @@ class DeleteUserController(BaseController):
         user_id: int = int(self.request.query_params.get("user_id"))
         user: User = await self._get_active_user(user_id=user_id)
 
-        return self.dump(await self._disable_user(user=user))
+        return await self.dump(await self._disable_user(user=user))

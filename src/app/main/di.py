@@ -1,3 +1,4 @@
+import traceback
 from datetime import datetime
 
 from fastapi import Depends, HTTPException, status
@@ -11,7 +12,7 @@ from ..application.schemas.auth import TokenPayload
 reuseable_oauth = OAuth2PasswordBearer(tokenUrl="/auth/login", scheme_name="JWT")
 
 
-async def get_current_user(token: str = Depends(reuseable_oauth)) -> str:
+async def auth_required(token: str = Depends(reuseable_oauth)) -> None:
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
         token_data = TokenPayload(**payload)
@@ -23,10 +24,9 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> str:
                 headers={"WWW-Authenticate": "Bearer"},
             )
     except (jwt.JWTError, ValidationError):
+        traceback.print_exc()
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
-    return token_data.sub

@@ -77,6 +77,7 @@ class BaseController(object):
             query = update(User).where(User.id == user.id).values(active=False)
             await session.execute(query)
             await session.commit()
+        user.active = False
         return user
 
     async def _update_user(self, user: User, name: str) -> User:

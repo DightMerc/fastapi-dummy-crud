@@ -14,3 +14,8 @@ class SignUpAuthSchema(BaseModel):
 class TokenPayload(BaseModel):
     exp: int
     sub: str
+
+
+class LoginResponseSchema(BaseModel):
+    access_token: str
+    refresh_token: str
