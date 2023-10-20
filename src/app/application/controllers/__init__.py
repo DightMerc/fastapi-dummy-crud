@@ -1,11 +1,12 @@
 import dataclasses
 import logging
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 import dataclass_factory
 from fastapi import Request, HTTPException
 from fastapi.responses import ORJSONResponse
 from sqlalchemy import select, update, insert
+from starlette import status
 
 from app.adapters.sqlalchemy_db.session import create_session_maker
 from app.application.models import User
@@ -23,17 +24,24 @@ class BaseController(object):
 
     async def _parse_request_data(self):
         if not self.schema:
-            raise HTTPException(status_code=500, detail="Schema is not specified")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Schema is not specified",
+            )
         self.request_data = self.schema(**(await self.request.json()))
 
     async def dump(self, obj: dataclasses.dataclass):
         factory = dataclass_factory.Factory()
-        return factory.dump(obj)
+        return await self._clear_sensitive_data(factory.dump(obj))
 
     def _get_logger(self) -> logging.Logger:
         logger: logging.Logger = logging.getLogger("app")
         logger.setLevel(logging.DEBUG)
         return logger
+
+    async def _clear_sensitive_data(self, data: Dict):
+        sensitive_fields = ("password",)
+        return {key: data[key] for key in data.keys() if key not in sensitive_fields}
 
     async def call(self):
         return ORJSONResponse(await self._call())
@@ -46,7 +54,9 @@ class BaseController(object):
                 )
             ).first()
             if not user:
-                raise HTTPException(status_code=404, detail="User not found")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+                )
             return user
 
     async def _get_users_by_name(self, name: str) -> List[User]:
@@ -57,7 +67,9 @@ class BaseController(object):
                 )
             ).all()
             if not user:
-                raise HTTPException(status_code=404, detail="User not found")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+                )
             return user
 
     async def _disable_user(self, user: User) -> User:
@@ -78,6 +90,38 @@ class BaseController(object):
     async def _create_user(self, name: str) -> User:
         async with self.session() as session:
             query = insert(User).values(name=name, active=True)
+            result = await session.execute(query)
+            await session.commit()
+        user_id: int = result.inserted_primary_key[0]
+        return await self._get_active_user(user_id=user_id)
+
+    async def _get_user_by_username(self, username: str) -> User:
+        async with self.session() as session:
+            user: Optional[User] = (
+                await session.scalars(
+                    select(User).filter(User.username == username, User.active == True)
+                )
+            ).first()
+            if not user:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+                )
+            return user
+
+    async def _get_possible_user_by_username(self, username: str) -> User:
+        async with self.session() as session:
+            user: Optional[User] = (
+                await session.scalars(
+                    select(User).filter(User.username == username, User.active == True)
+                )
+            ).first()
+            return user
+
+    async def _create_new_auth_user(self, username: str, password: str) -> User:
+        async with self.session() as session:
+            query = insert(User).values(
+                username=username, active=True, password=password
+            )
             result = await session.execute(query)
             await session.commit()
         user_id: int = result.inserted_primary_key[0]

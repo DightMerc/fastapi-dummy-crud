@@ -12,6 +12,8 @@ user = Table(
     Column("id", Integer, primary_key=True),
     Column("name", String()),
     Column("active", Boolean()),
+    Column("username", String()),
+    Column("password", String()),
 )
 
 mapper_registry.map_imperatively(User, user)
