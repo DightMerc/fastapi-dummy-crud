@@ -7,3 +7,4 @@ alembic
 aiosqlite
 greenlet
 dataclass-factory
+pydantic

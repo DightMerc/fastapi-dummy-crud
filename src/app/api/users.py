@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Request
+from typing import Annotated
+
+from fastapi import APIRouter, Request, Body
 from fastapi.responses import ORJSONResponse
 
 from app.application.controllers.users import (
@@ -7,6 +9,7 @@ from app.application.controllers.users import (
     UpdateUserController,
     DeleteUserController,
 )
+from app.application.schemas.users import UserSchema
 
 users_router = APIRouter()
 
@@ -28,6 +31,7 @@ async def list_users(
 @users_router.put("/user")
 async def update_user(
     request: Request,
+    user: UserSchema,
 ) -> ORJSONResponse:
     return await UpdateUserController(request=request).call()
 
