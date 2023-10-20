@@ -15,6 +15,4 @@ COPY ./src/log_config.yaml /app/log_config.yaml
 COPY --from=libs /usr/local /usr/local
 COPY . .
 
-RUN chmod +x /app/src/app.db
-
 ENTRYPOINT ["bash", "entrypoint.sh"]
