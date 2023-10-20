@@ -6,6 +6,10 @@ RUN pip install -r requirements.txt
 
 FROM python:3.11.6-slim-bullseye
 
+RUN apt-get -y update \
+    && apt-get -y install --no-install-recommends curl \
+    && update-ca-certificates
+
 EXPOSE 5060
 
 WORKDIR /app

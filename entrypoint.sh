@@ -7,7 +7,6 @@ alembic upgrade head
 # running tests
 #cd /app/src/tests
 python -m pytest /app/src/tests
-
 # if tests passed
 if [ $? -ne 0 ]
 then

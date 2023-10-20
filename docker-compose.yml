@@ -1,4 +1,4 @@
- version: '3.7'
+ version: '3.8'
  services:
    app:
        build:
@@ -14,3 +14,9 @@
          options:
            max-size: "256m"
            max-file: "10"
+       healthcheck:
+         test: [ "CMD", "curl", "-f", "http://0.0.0.0:5060/system/healthcheck" ]
+         interval: 5s
+         timeout: 10s
+         retries: 3
+         start_period: 10s

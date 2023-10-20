@@ -1,4 +1,5 @@
 from fastapi import Request
+from sqlalchemy import text
 
 from app.application.controllers import BaseController
 
@@ -8,4 +9,6 @@ class HealthcheckController(BaseController):
         super(HealthcheckController, self).__init__(request=request)
 
     async def _call(self):
-        return dict()
+        async with self.session() as session:
+            await session.execute(text("select 1;"))
+        return dict(status="Ok")
