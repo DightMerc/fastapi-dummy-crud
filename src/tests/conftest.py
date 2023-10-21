@@ -2,7 +2,6 @@ import os
 import shutil
 
 import pytest
-import sqlalchemy
 from fastapi.testclient import TestClient
 
 
