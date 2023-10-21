@@ -2,7 +2,7 @@
 
 ![Поддерживаемые Python версии](https://img.shields.io/badge/python-3.11+-blue.svg)
 [![Лицензия LGPLv3](https://img.shields.io/badge/license-LGPLv3-lightgrey.svg)](https://www.gnu.org/licenses/lgpl-3.0.html)
-
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/50fd16106eb54631ac687fde2e64cdca)](https://app.codacy.com/gh/DightMerc/fastapi-dummy-crud/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 This project is a simple example of a CRUD application built with FastAPI. It demonstrates the basic operations of Create, Read, Update, and Delete (CRUD) using a web API.
 
